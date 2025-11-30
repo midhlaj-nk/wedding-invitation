@@ -514,6 +514,16 @@
         document.addEventListener('click', playOnInteraction);
         document.addEventListener('touchstart', playOnInteraction);
 
+        // --- Pause Music When Page is Hidden/Minimized ---
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                music.pause();
+            } else {
+                // Resume music when user comes back
+                music.play().catch(e => console.log("Resume blocked", e));
+            }
+        });
+
         // --- Countdown Timer Logic ---
         function updateCountdown() {
             const weddingDate = new Date('December 25, 2025 10:00:00').getTime();
