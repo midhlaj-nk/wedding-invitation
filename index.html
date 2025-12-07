@@ -244,20 +244,16 @@
         }
 
         .invite-card-wrapper {
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
             max-width: 600px;
             width: 100%;
-            border-radius: 10px;
-            /* Slightly more rounded */
+            border-radius: 4px;
+            /* Slight radius for elegance */
             overflow: hidden;
             margin-bottom: 40px;
             background: white;
             padding: 10px;
             /* White border effect */
-
-            /* 3D TILT SETUP */
-            transform-style: preserve-3d;
-            transform: perspective(1000px);
         }
 
         .invite-image {
@@ -431,12 +427,55 @@
                 font-size: 0.6rem;
             }
         }
+
+        /* --- ASSET LOADER --- */
+        #page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--cream-bg);
+            z-index: 99999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(123, 17, 36, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--text-burgundy);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loader-hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* Hide content initially to prevent FOUC */
+        body.loading {
+            overflow: hidden;
+        }
     </style>
 </head>
 
-<body>
+<body class="loading">
 
-
+    <!-- ASSET LOADER OVERLAY -->
+    <div id="page-loader">
+        <div class="spinner"></div>
+    </div>
 
     <!-- Grain Texture for Premium Feel -->
     <div class="texture-overlay"></div>
@@ -484,9 +523,8 @@
 
         <div class="section-title" data-aos="fade-in">You are invited</div>
 
-        <div class="invite-card-wrapper" data-aos="zoom-in-up" data-aos-duration="1500" data-tilt data-tilt-max="10"
-            data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
-            <img src="MN_HF_.jpeg" alt="Midhlaj & Hana Invitation" class="invite-image" loading="lazy" decoding="async">
+        <div class="invite-card-wrapper" data-aos="zoom-in-up" data-aos-duration="1500">
+            <img src="MN_HF_.jpeg" alt="Midhlaj & Hana Invitation" class="invite-image" loading="eager">
         </div>
 
         <div class="actions-container" data-aos="fade-up">
@@ -512,13 +550,19 @@
     </section>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <!-- Vanilla Tilt Library for 3D Effect -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
     <script>
-        // Initialize Scroll Animations
-        AOS.init({
-            once: true, // Only animate once
-            offset: 100
+        // --- Strict Asset Loading Logic ---
+        window.addEventListener('load', () => {
+            // This runs ONLY after all images, scripts, and CSS are fully loaded
+            const loader = document.getElementById('page-loader');
+            loader.classList.add('loader-hidden');
+            document.body.classList.remove('loading');
+
+            // Initialize animations only after load
+            AOS.init({
+                once: true,
+                offset: 100
+            });
         });
 
 
