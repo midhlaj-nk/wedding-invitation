@@ -637,12 +637,14 @@
         document.addEventListener('click', playOnInteraction);
         document.addEventListener('touchstart', playOnInteraction);
 
-        // --- Pause Music When Page is Hidden/Minimized ---
+        // --- Smart Music Control (Pause on Hide) ---
         document.addEventListener('visibilitychange', () => {
+            const music = document.getElementById('bg-music');
             if (document.hidden) {
                 music.pause();
             } else {
-                // Resume music when user comes back
+                // Only resume if it was playing before (or if we want it to auto-resume)
+                // We'll assume auto-resume is desired for the ambience
                 music.play().catch(e => console.log("Resume blocked", e));
             }
         });
